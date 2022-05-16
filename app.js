@@ -58,6 +58,18 @@ let budgetController = (function () {
       //return the new item
       return newItem;
     },
+    // what data is needed to delete an item, - item type and id
+    budgetDeleteItem: function (type, id) {
+      let ids, index;
+
+      ids = data.allItems[type].map(function (cur) {
+        return cur.id;
+      });
+      index = ids.indexOf(id);
+      if (index !== -1) {
+        data.allItems[type].splice(index, 1);
+      }
+    },
 
     calcBudget: function () {
       //calc the sum of income and expenses
@@ -101,6 +113,7 @@ let UIController = (function () {
     IncomeLabel: ".budget__income--value",
     ExpenseLabel: ".budget__expenses--value",
     PercentLabel: ".budget__expenses--percentage",
+    container: ".container",
   };
 
   return {
@@ -156,7 +169,7 @@ let UIController = (function () {
         document.querySelector(DOMstrings.PercentLabel).textContent =
           obj.percentage + "%";
       } else {
-        document.querySelector(DOMstrings.PercentLabel).textContent = "---";
+        document.querySelector(DOMstrings.PercentLabel).textContent = "--";
       }
     },
   };
@@ -172,6 +185,10 @@ let controller = (function (budgetCtrl, UICtrl) {
         ctrlAddItem();
       }
     });
+
+    document
+      .querySelector(DOM.container)
+      .addEventListener("click", ctrlDeleteItem);
   };
 
   const updateBudget = function () {
@@ -202,6 +219,21 @@ let controller = (function (budgetCtrl, UICtrl) {
       //Calc and Update Budget
       updateBudget();
     }
+  };
+
+  const ctrlDeleteItem = function (event) {
+    let itemId, splitId, type, ID;
+    //get the target by id
+    itemId = event.target.parentNode.parentNode.parentNode.parentNode.id;
+    if (itemId) {
+      splitId = itemId.split("-");
+      type = splitId[0];
+      ID = parseInt(splitId[1]);
+    }
+    //delete the item from the data structure
+    budgetCtrl.budgetDeleteItem(type, ID);
+    // delete the item from the ui
+    //calculate and update budget
   };
 
   return {
