@@ -100,6 +100,9 @@ let budgetController = (function () {
   };
 })();
 
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 //UI Controller - Responsible for ui modifications
 let UIController = (function () {
   const DOMstrings = {
@@ -149,6 +152,12 @@ let UIController = (function () {
       //insert html
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
     },
+
+    UIDeleteItem: function (selectorID) {
+      const el = document.getElementById(selectorID);
+      el.parentNode.removeChild(el);
+    },
+
     clearField: function () {
       const eleDescription = (document.querySelector(
         DOMstrings.inputDescription
@@ -233,7 +242,9 @@ let controller = (function (budgetCtrl, UICtrl) {
     //delete the item from the data structure
     budgetCtrl.budgetDeleteItem(type, ID);
     // delete the item from the ui
+    UICtrl.UIDeleteItem(itemId);
     //calculate and update budget
+    updateBudget();
   };
 
   return {
