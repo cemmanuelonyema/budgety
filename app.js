@@ -146,6 +146,20 @@ let UIController = (function () {
     itemPercentLabel: ".item__percentage",
   };
 
+  const formatNumber = function (num, type) {
+    num = Math.abs(num);
+    num = num.toFixed(2);
+    let numSplit = num.split(".");
+    let int = numSplit[0];
+
+    if (int.length > 3) {
+      int = int.substr(0, int.length - 3) + "," + int.substr(int.length - 3, 3);
+    }
+    const dec = numSplit[1];
+
+    return (type === "expense" ? "-" : "+") + " " + int + "." + dec;
+  };
+
   return {
     getInput: function () {
       return {
@@ -174,7 +188,7 @@ let UIController = (function () {
       //Replace the placeHolder text with some actual date
       newHtml = html.replace("%id%", obj.id);
       newHtml = newHtml.replace("%description%", obj.description);
-      newHtml = newHtml.replace("%value%", obj.value);
+      newHtml = newHtml.replace("%value%", formatNumber(obj.value, type));
 
       //insert html
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
@@ -187,11 +201,10 @@ let UIController = (function () {
 
     clearField: function () {
       document.querySelector(DOMstrings.inputDescription).value = "";
-
       document.querySelector(DOMstrings.inputValue).value = "";
-
       document.querySelector(DOMstrings.inputDescription).focus();
     },
+
     displayBudget: function (obj) {
       document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
       document.querySelector(DOMstrings.ExpenseLabel).textContent =
@@ -222,7 +235,7 @@ let UIController = (function () {
       nodeListForEach(itemPercentFields, function (cur, index) {
         //do you
 
-        if (percentages > 0) {
+        if (percentages[index] > 0) {
           cur.textContent = percentages[index] + "%";
         } else {
           cur.textContent = "--";
@@ -265,6 +278,7 @@ let controller = (function (budgetCtrl, UICtrl) {
     //return the percentage
     const itemPercentage = budgetCtrl.getPercentage();
     //display the percentage on the ui
+    console.log(itemPercentage);
     UICtrl.displayPercentage(itemPercentage);
   };
 
