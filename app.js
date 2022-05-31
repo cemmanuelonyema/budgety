@@ -379,3 +379,7 @@ let controller = (function (budgetCtrl, UICtrl) {
 })(budgetController, UIController);
 
 controller.init();
+
+//new additions
+
+// element.Array.from(Elements)
